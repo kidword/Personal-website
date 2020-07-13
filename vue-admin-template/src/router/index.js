@@ -58,21 +58,23 @@ export const constantRoutes = [
   {
     path: '/example',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
+    redirect: '/data',
     meta: { title: '数据', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
+        path: 'data',
+        component: () => import('@/views/data/index'),
         meta: { title: '房价数据', icon: 'table' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
+        path: 'qixiang',
+        component: () => import('@/views/data/qixiang'),
         meta: { title: '气象数据', icon: 'tree' }
+      },
+      {
+        path: 'poi',
+        component: () => import('@/views/data/poi'),
+        meta: { title: 'poi数据', icon: 'example' }
       }
     ]
   },
