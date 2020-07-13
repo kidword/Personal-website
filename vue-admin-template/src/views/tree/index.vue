@@ -1,78 +1,109 @@
 <template>
-  <div class="app-container">
-    <el-input v-model="filterText" placeholder="Filter keyword" style="margin-bottom:30px;" />
-
-    <el-tree
-      ref="tree2"
-      :data="data2"
-      :props="defaultProps"
-      :filter-node-method="filterNode"
-      class="filter-tree"
-      default-expand-all
-    />
-
+  <div class="main" style="padding: 15px">
+    <el-tabs v-model="activeName" @tab-click="handleClick">
+      <el-tab-pane label="气象站预报" name="first">
+        <div class="app-container">
+          <el-table
+            v-loading="listLoading"
+            :data="forecast"
+            element-loading-text="Loading"
+            border
+            fit
+            highlight-current-row
+          >
+            <el-table-column align="center" label="编号" width="90">
+              <template slot-scope="scope">
+                {{ scope.$index }}
+              </template>
+            </el-table-column>
+            <el-table-column align="center" label="名称" width="150">
+              <template slot-scope="scope">
+                {{ scope.row.name }}
+              </template>
+            </el-table-column>
+            <el-table-column label="预报内容">
+              <template slot-scope="scope">
+                {{ scope.row.content }}
+              </template>
+            </el-table-column>
+            <el-table-column label="类型" width="110" align="center">
+              <template slot-scope="scope">
+                <span>{{ scope.row.type }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="所在地" width="110" align="center">
+              <template slot-scope="scope">
+                {{ scope.row.location }}
+              </template>
+            </el-table-column>
+            <el-table-column class-name="status-col" label="等级" width="110" align="center">
+              <template slot-scope="scope">
+                <el-tag :type="scope.row.level | statusFilter">{{ scope.row.level }}</el-tag>
+              </template>
+            </el-table-column>
+            <el-table-column align="center" prop="created_at" label="Display_time" width="200">
+              <template slot-scope="scope">
+                <i class="el-icon-time" /> &nbsp;
+                <span>{{ scope.row.display_time }}</span>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </el-tab-pane>
+      <el-tab-pane label="气候" name="second" />
+      <el-tab-pane label="三维闪电" name="third" />
+      <el-tab-pane label="气象站" name="fourth" />
+    </el-tabs>
   </div>
+
 </template>
 
 <script>
-export default {
+import { getList } from '@/api/table'
 
-  data() {
-    return {
-      filterText: '',
-      data2: [{
-        id: 1,
-        label: 'Level one 1',
-        children: [{
-          id: 4,
-          label: 'Level two 1-1',
-          children: [{
-            id: 9,
-            label: 'Level three 1-1-1'
-          }, {
-            id: 10,
-            label: 'Level three 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: 'Level one 2',
-        children: [{
-          id: 5,
-          label: 'Level two 2-1'
-        }, {
-          id: 6,
-          label: 'Level two 2-2'
-        }]
-      }, {
-        id: 3,
-        label: 'Level one 3',
-        children: [{
-          id: 7,
-          label: 'Level two 3-1'
-        }, {
-          id: 8,
-          label: 'Level two 3-2'
-        }]
-      }],
-      defaultProps: {
-        children: 'children',
-        label: 'label'
+export default {
+  filters: {
+    statusFilter(status) {
+      const statusMap = {
+        published: 'success',
+        draft: 'gray',
+        deleted: 'danger'
+      }
+      if (status === '蓝色') {
+        return statusMap.draft
+      }
+      if (status === '黄色') {
+        return statusMap.published
+      }
+      if (status === '红色') {
+        return statusMap.deleted
+      } else {
+        return statusMap.published
       }
     }
   },
-  watch: {
-    filterText(val) {
-      this.$refs.tree2.filter(val)
+  data() {
+    return {
+      forecast: null, // 气象站预报list
+      listLoading: true,
+      activeName: 'first'
     }
   },
-
+  created() {
+    this.fetchData()
+  },
   methods: {
-    filterNode(value, data) {
-      if (!value) return true
-      return data.label.indexOf(value) !== -1
+    fetchData() {
+      this.listLoading = true
+      getList({ 'menu': '1' }).then(response => {
+        this.forecast = response.data.items
+        // console.log(response.data)
+        this.listLoading = false
+      })
+    },
+    handleClick(tab, event) {
+      console.log(tab, event)
     }
   }
 }
 </script>
-
