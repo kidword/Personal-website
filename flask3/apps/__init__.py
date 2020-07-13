@@ -4,7 +4,7 @@ from flask import Flask
 
 
 def register_cms_bp(app):
-    from apps.cms import cms_bp
+    from apps.admin import cms_bp
     # 将蓝图注册到app上
     app.register_blueprint(cms_bp)
 
