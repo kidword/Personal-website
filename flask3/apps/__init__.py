@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # 创建管理所有项目逻辑代码的包apps
 from flask import Flask
+from flask_cors import *
 
 
 def register_cms_bp(app):
@@ -11,6 +12,7 @@ def register_cms_bp(app):
 
 def get_cms_app(config_obj: str):
     app = Flask(__name__)
+    CORS(app, supports_credentials=True)
     # 增加app系统配置
     app.config.from_object(config_obj)
     register_cms_bp(app)

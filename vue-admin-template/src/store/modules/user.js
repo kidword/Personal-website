@@ -5,7 +5,7 @@ import { resetRouter } from '@/router'
 const getDefaultState = () => {
   return {
     token: getToken(),
-    name: '',
+    name: 'admin',
     avatar: ''
   }
 }
@@ -34,7 +34,9 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
+        // console.log(response)
         commit('SET_TOKEN', data.token)
+        // console.log(data.token)
         setToken(data.token)
         resolve()
       }).catch(error => {
@@ -52,11 +54,6 @@ const actions = {
         if (!data) {
           return reject('Verification failed, please Login again.')
         }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
         resolve(data)
       }).catch(error => {
         reject(error)

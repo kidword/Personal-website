@@ -11,7 +11,7 @@ export function Auto(data) {
 
 export function login(data) {
   return request({
-    url: '/vue-admin-template/user/login',
+    url: 'http://192.168.1.169:7000/login',
     method: 'post',
     data
   })
@@ -19,7 +19,7 @@ export function login(data) {
 
 export function getInfo(token) {
   return request({
-    url: '/vue-admin-template/user/info',
+    url: 'http://192.168.1.169:7000/userinfo',
     method: 'get',
     params: { token }
   })
